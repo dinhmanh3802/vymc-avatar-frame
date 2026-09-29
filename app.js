@@ -56,8 +56,8 @@ let currentImageURL = null;
 /*
     Frame của mày là 1280 x 1280
 */
-const OUTPUT_WIDTH = 1280;
-const OUTPUT_HEIGHT = 1280;
+const OUTPUT_WIDTH = 1254;
+const OUTPUT_HEIGHT = 1254;
 
 
 /*
@@ -79,9 +79,9 @@ const OUTPUT_HEIGHT = 1280;
     giảm = vòng ảnh nhỏ hơn
 */
 const AVATAR_CIRCLE = {
-    centerX: 640,
-    centerY: 560,
-    radius: 390
+    centerX: 619,
+    centerY: 583,
+    radius: 405
 };
 
 

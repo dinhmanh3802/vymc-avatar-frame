@@ -44,18 +44,56 @@ const ctx =
     resultCanvas.getContext("2d");
 
 
+/* =================================
+   CẤU HÌNH CHÍNH
+================================= */
+
 let cropper = null;
 
 let currentImageURL = null;
 
 
-const OUTPUT_WIDTH = 1080;
+/*
+    Frame của mày là 1280 x 1280
+*/
+const OUTPUT_WIDTH = 1280;
+const OUTPUT_HEIGHT = 1280;
 
-const OUTPUT_HEIGHT = 1080;
+
+/*
+    Vị trí vùng tròn để nhét ảnh vào.
+
+    Nếu sau này chưa khít 100%,
+    chỉ cần chỉnh 3 số này.
+
+    centerX:
+    tăng = sang phải
+    giảm = sang trái
+
+    centerY:
+    tăng = xuống dưới
+    giảm = lên trên
+
+    radius:
+    tăng = vòng ảnh lớn hơn
+    giảm = vòng ảnh nhỏ hơn
+*/
+const AVATAR_CIRCLE = {
+    centerX: 640,
+    centerY: 560,
+    radius: 390
+};
+
+
+/*
+    Cho ảnh tràn thêm một chút ra ngoài
+    để không bị hở mép frame.
+*/
+const AVATAR_BLEED = 12;
 
 
 /* =================================
-   HANDLE IMAGE
+   LOAD ẢNH NGƯỜI DÙNG
 ================================= */
 
 function loadImageFile(file) {
@@ -67,7 +105,9 @@ function loadImageFile(file) {
 
     if (!file.type.startsWith("image/")) {
 
-        alert("Vui lòng chọn một file ảnh JPG hoặc PNG.");
+        alert(
+            "Vui lòng chọn một file ảnh JPG hoặc PNG."
+        );
 
         return;
 
@@ -76,7 +116,9 @@ function loadImageFile(file) {
 
     if (currentImageURL) {
 
-        URL.revokeObjectURL(currentImageURL);
+        URL.revokeObjectURL(
+            currentImageURL
+        );
 
     }
 
@@ -93,9 +135,13 @@ function loadImageFile(file) {
         currentImageURL;
 
 
-    editorSection.classList.remove("hidden");
+    editorSection.classList.remove(
+        "hidden"
+    );
 
-    resultSection.classList.add("hidden");
+    resultSection.classList.add(
+        "hidden"
+    );
 
 
     imageToCrop.onload = function () {
@@ -112,9 +158,12 @@ function loadImageFile(file) {
                 imageToCrop,
                 {
 
-                    aspectRatio:
-                        OUTPUT_WIDTH /
-                        OUTPUT_HEIGHT,
+                    /*
+                        Crop vẫn để vuông.
+                        Sau đó ảnh vuông này
+                        sẽ được cắt thành hình tròn.
+                    */
+                    aspectRatio: 1,
 
                     viewMode: 1,
 
@@ -173,7 +222,7 @@ function loadImageFile(file) {
 
 
 /* =================================
-   INPUT
+   CHỌN ẢNH
 ================================= */
 
 imageInput.addEventListener(
@@ -190,7 +239,7 @@ imageInput.addEventListener(
 
 
 /* =================================
-   DRAG & DROP
+   KÉO THẢ ẢNH TRÊN MÁY TÍNH
 ================================= */
 
 uploadPanel.addEventListener(
@@ -241,7 +290,7 @@ uploadPanel.addEventListener(
 
 
 /* =================================
-   CONTROLS
+   PHÓNG TO
 ================================= */
 
 zoomInButton.addEventListener(
@@ -258,6 +307,10 @@ zoomInButton.addEventListener(
 );
 
 
+/* =================================
+   THU NHỎ
+================================= */
+
 zoomOutButton.addEventListener(
     "click",
     function () {
@@ -271,6 +324,10 @@ zoomOutButton.addEventListener(
     }
 );
 
+
+/* =================================
+   XOAY ẢNH
+================================= */
 
 rotateButton.addEventListener(
     "click",
@@ -287,7 +344,7 @@ rotateButton.addEventListener(
 
 
 /* =================================
-   CREATE FINAL IMAGE
+   TẠO ẢNH CUỐI
 ================================= */
 
 createButton.addEventListener(
@@ -311,14 +368,17 @@ createButton.addEventListener(
             "<span>Đang tạo ảnh...</span>";
 
 
+        /*
+            Lấy ảnh đã crop
+        */
         const croppedCanvas =
             cropper.getCroppedCanvas({
 
                 width:
-                    OUTPUT_WIDTH,
+                    AVATAR_CIRCLE.radius * 2,
 
                 height:
-                    OUTPUT_HEIGHT,
+                    AVATAR_CIRCLE.radius * 2,
 
                 imageSmoothingEnabled:
                     true,
@@ -329,6 +389,9 @@ createButton.addEventListener(
             });
 
 
+        /*
+            Setup canvas kết quả
+        */
         resultCanvas.width =
             OUTPUT_WIDTH;
 
@@ -336,6 +399,9 @@ createButton.addEventListener(
             OUTPUT_HEIGHT;
 
 
+        /*
+            Xóa canvas cũ
+        */
         ctx.clearRect(
             0,
             0,
@@ -344,15 +410,9 @@ createButton.addEventListener(
         );
 
 
-        ctx.drawImage(
-            croppedCanvas,
-            0,
-            0,
-            OUTPUT_WIDTH,
-            OUTPUT_HEIGHT
-        );
-
-
+        /*
+            Load frame
+        */
         const frameImage =
             new Image();
 
@@ -360,6 +420,76 @@ createButton.addEventListener(
         frameImage.onload =
             function () {
 
+                /*
+                    Xóa canvas lại lần nữa
+                    để chắc chắn sạch.
+                */
+                ctx.clearRect(
+                    0,
+                    0,
+                    OUTPUT_WIDTH,
+                    OUTPUT_HEIGHT
+                );
+
+
+                /*
+                    BẮT ĐẦU CLIP VÙNG TRÒN
+                */
+                ctx.save();
+
+
+                ctx.beginPath();
+
+
+                ctx.arc(
+                    AVATAR_CIRCLE.centerX,
+                    AVATAR_CIRCLE.centerY,
+                    AVATAR_CIRCLE.radius,
+                    0,
+                    Math.PI * 2
+                );
+
+
+                ctx.closePath();
+
+
+                ctx.clip();
+
+
+                /*
+                    Vẽ ảnh người dùng
+                    chỉ bên trong vùng tròn.
+                */
+                ctx.drawImage(
+
+                    croppedCanvas,
+
+                    AVATAR_CIRCLE.centerX
+                        - AVATAR_CIRCLE.radius
+                        - AVATAR_BLEED,
+
+                    AVATAR_CIRCLE.centerY
+                        - AVATAR_CIRCLE.radius
+                        - AVATAR_BLEED,
+
+                    (AVATAR_CIRCLE.radius * 2)
+                        + (AVATAR_BLEED * 2),
+
+                    (AVATAR_CIRCLE.radius * 2)
+                        + (AVATAR_BLEED * 2)
+
+                );
+
+
+                /*
+                    Kết thúc clip
+                */
+                ctx.restore();
+
+
+                /*
+                    Vẽ frame lên trên cùng
+                */
                 ctx.drawImage(
                     frameImage,
                     0,
@@ -369,11 +499,17 @@ createButton.addEventListener(
                 );
 
 
+                /*
+                    Hiện kết quả
+                */
                 resultSection.classList.remove(
                     "hidden"
                 );
 
 
+                /*
+                    Trả nút về trạng thái ban đầu
+                */
                 createButton.disabled =
                     false;
 
@@ -395,6 +531,9 @@ createButton.addEventListener(
                     `;
 
 
+                /*
+                    Cuộn xuống kết quả
+                */
                 setTimeout(
                     function () {
 
@@ -410,6 +549,9 @@ createButton.addEventListener(
             };
 
 
+        /*
+            Nếu không load được frame
+        */
         frameImage.onerror =
             function () {
 
@@ -428,6 +570,9 @@ createButton.addEventListener(
             };
 
 
+        /*
+            Đường dẫn frame
+        */
         frameImage.src =
             "assets/frame.png";
 
@@ -436,7 +581,7 @@ createButton.addEventListener(
 
 
 /* =================================
-   DOWNLOAD
+   TẢI ẢNH
 ================================= */
 
 downloadButton.addEventListener(
@@ -509,7 +654,7 @@ downloadButton.addEventListener(
 
 
 /* =================================
-   SELECT ANOTHER IMAGE
+   CHỌN ẢNH KHÁC
 ================================= */
 
 function chooseAnotherImage() {
@@ -534,7 +679,7 @@ selectAnotherButton.addEventListener(
 
 
 /* =================================
-   CLEANUP
+   DỌN BỘ NHỚ
 ================================= */
 
 window.addEventListener(

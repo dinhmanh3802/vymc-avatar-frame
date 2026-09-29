@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="theme-color"
+        content="#071a38"
+    >
+
+    <title>Cùng VYMC thay khung avata</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+    <!-- BACKGROUND DECORATION -->
+    <div class="background-effects" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+
+    <main class="page-shell">
+
+        <!-- HERO -->
+        <header class="hero">
+
+            <div class="anniversary-badge">
+                <span class="badge-dot"></span>
+                KỶ NIỆM 2 NĂM THÀNH LẬP
+            </div>
+
+            <h1>
+                Cùng VYMC thay khung avata
+                <span>chào mừng kỷ niệm 2 năm thành lập</span>
+            </h1>
+
+            <p class="hero-description">
+                Chọn ảnh yêu thích, căn chỉnh thật đẹp và tạo ngay ảnh đại diện
+                mang dấu ấn VYMC.
+            </p>
+
+            <div class="step-list">
+
+                <div class="step-item active">
+                    <span>01</span>
+                    Chọn ảnh
+                </div>
+
+                <div class="step-line"></div>
+
+                <div class="step-item">
+                    <span>02</span>
+                    Căn chỉnh
+                </div>
+
+                <div class="step-line"></div>
+
+                <div class="step-item">
+                    <span>03</span>
+                    Tải về
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- MAIN TOOL -->
+        <section class="tool-card">
+
+            <!-- UPLOAD -->
+            <section
+                class="upload-panel"
+                id="uploadPanel"
+            >
+
+                <div class="upload-icon">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                    >
+                        <path
+                            d="M12 16V4M12 4L7.5 8.5M12 4L16.5 8.5"
+                        />
+                        <path
+                            d="M5 14V18C5 19.1 5.9 20 7 20H17C18.1 20 19 19.1 19 18V14"
+                        />
+                    </svg>
+                </div>
+
+                <h2>Chọn ảnh của bạn</h2>
+
+                <p>
+                    JPG, PNG hoặc ảnh trực tiếp từ điện thoại
+                </p>
+
+                <label
+                    for="imageInput"
+                    class="upload-button"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                    >
+                        <path
+                            d="M4 16L8.5 11.5L12 15L14.5 12.5L20 18"
+                        />
+                        <circle
+                            cx="9"
+                            cy="7"
+                            r="2"
+                        />
+                        <rect
+                            x="3"
+                            y="3"
+                            width="18"
+                            height="18"
+                            rx="3"
+                        />
+                    </svg>
+
+                    Chọn ảnh
+
+                </label>
+
+                <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                    hidden
+                >
+
+                <p
+                    id="fileName"
+                    class="file-name"
+                ></p>
+
+            </section>
+
+
+            <!-- EDITOR -->
+            <section
+                id="editorSection"
+                class="editor-section hidden"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="eyebrow">BƯỚC 02</span>
+                        <h2>Căn chỉnh ảnh</h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="selectAnotherButton"
+                        class="text-button"
+                    >
+                        Đổi ảnh
+                    </button>
+
+                </div>
+
+
+                <p class="editor-hint">
+                    Kéo ảnh để thay đổi vị trí. Dùng hai ngón tay trên điện thoại
+                    hoặc các nút bên dưới để phóng to, thu nhỏ.
+                </p>
+
+
+                <div class="editor-frame">
+
+                    <div class="crop-area">
+
+                        <img
+                            id="imageToCrop"
+                            alt="Ảnh cần căn chỉnh"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="controls">
+
+                    <button
+                        type="button"
+                        id="zoomOutButton"
+                        class="control-button"
+                    >
+
+                        <span class="control-icon">−</span>
+
+                        <span>Thu nhỏ</span>
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="zoomInButton"
+                        class="control-button"
+                    >
+
+                        <span class="control-icon">+</span>
+
+                        <span>Phóng to</span>
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="rotateButton"
+                        class="control-button"
+                    >
+
+                        <span class="control-icon">↻</span>
+
+                        <span>Xoay</span>
+
+                    </button>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="createButton"
+                    class="primary-button large-button"
+                >
+
+                    <span>Tạo ảnh với khung VYMC</span>
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                    >
+                        <path d="M5 12H19" />
+                        <path d="M14 7L19 12L14 17" />
+                    </svg>
+
+                </button>
+
+            </section>
+
+
+            <!-- RESULT -->
+            <section
+                id="resultSection"
+                class="result-section hidden"
+            >
+
+                <div class="success-badge">
+                    <span>✓</span>
+                    HOÀN THÀNH
+                </div>
+
+                <div class="result-heading">
+
+                    <span class="eyebrow">BƯỚC 03</span>
+
+                    <h2>Ảnh của bạn đã sẵn sàng!</h2>
+
+                    <p>
+                        Kiểm tra lần cuối và tải ảnh về thiết bị.
+                    </p>
+
+                </div>
+
+
+                <div class="canvas-wrapper">
+
+                    <canvas
+                        id="resultCanvas"
+                        width="1080"
+                        height="1080"
+                    ></canvas>
+
+                </div>
+
+
+                <div class="result-buttons">
+
+                    <button
+                        type="button"
+                        id="downloadButton"
+                        class="primary-button download-button"
+                    >
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                        >
+                            <path d="M12 4V15" />
+                            <path d="M8 11L12 15L16 11" />
+                            <path d="M5 19H19" />
+                        </svg>
+
+                        Tải ảnh về
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="changeImageButton"
+                        class="secondary-button"
+                    >
+
+                        Tạo ảnh khác
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <footer>
+            <span>VYMC</span>
+            <span class="footer-dot"></span>
+            <span>2 YEARS TOGETHER</span>
+        </footer>
+
+    </main>
+
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"
+    ></script>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
